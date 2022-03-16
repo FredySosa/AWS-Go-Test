@@ -2,36 +2,65 @@ package adapters
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
+	"errors"
 	"net/http"
 	"strings"
 
+	"github.com/FredySosa/AWS-Go-Test/createData/internal/core/domain"
+	"github.com/FredySosa/AWS-Go-Test/createData/internal/ports"
 	"github.com/aws/aws-lambda-go/events"
 )
 
 type Handler struct {
+	PostsServicePort ports.PostsServicePort
 }
 
-func NewHTTPHandler() Handler {
-	return Handler{}
+func NewHTTPHandler(sp ports.PostsServicePort) Handler {
+	return Handler{
+		PostsServicePort: sp,
+	}
 }
 
 func (h Handler) ProcessRequest(
 	ctx context.Context,
-	request events.APIGatewayV2HTTPRequest,
+	req events.APIGatewayV2HTTPRequest,
 ) (events.APIGatewayV2HTTPResponse, error) {
 
-	body := request.Body
-	response := "##"
-	if strings.Contains(body, "test") {
-		response = "@@"
+	var request domain.CreationRequest
+	if err := json.NewDecoder(strings.NewReader(req.Body)).Decode(&request); err != nil {
+		return events.APIGatewayV2HTTPResponse{
+			StatusCode: domain.ParsingBodyError.HTTPCode,
+			Headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+			Body: domain.ParsingBodyError.String(),
+		}, nil
+	}
+
+	response, err := h.PostsServicePort.CreatePort(ctx, request)
+	if err != nil {
+		toReturn := events.APIGatewayV2HTTPResponse{
+			StatusCode: domain.UnknownErr.HTTPCode,
+			Headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+			Body: domain.UnknownErr.String(),
+		}
+		var ce domain.CustomError
+		if errors.As(err, &ce) {
+			toReturn.StatusCode = ce.HTTPCode
+			toReturn.Body = ce.String()
+		}
+
+		return toReturn, nil
 	}
 
 	return events.APIGatewayV2HTTPResponse{
-		StatusCode: http.StatusOK,
+		StatusCode: http.StatusCreated,
 		Headers: map[string]string{
 			"Content-Type": "application/json",
 		},
-		Body: fmt.Sprintf(`{"response":"%s"}`, response),
+		Body: response.String(),
 	}, nil
 }

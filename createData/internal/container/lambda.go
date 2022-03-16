@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/FredySosa/AWS-Go-Test/createData/internal/adapters"
-
+	"github.com/FredySosa/AWS-Go-Test/createData/internal/core/services"
 	"github.com/aws/aws-lambda-go/events"
 )
 
@@ -17,8 +17,11 @@ type LambdaHandler struct {
 	httpHandlerFunc lambdaFunc
 }
 
-func Initialize() LambdaHandler {
-	httpHandler := adapters.NewHTTPHandler()
+func Initialize(ctx context.Context, region string) LambdaHandler {
+	postsRepository := adapters.NewPostsRepository(ctx, region)
+	postsService := services.NewPostsService(postsRepository)
+	httpHandler := adapters.NewHTTPHandler(postsService)
+
 	return LambdaHandler{
 		httpHandlerFunc: httpHandler.ProcessRequest,
 	}
