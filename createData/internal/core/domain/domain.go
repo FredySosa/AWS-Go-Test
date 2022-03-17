@@ -4,16 +4,16 @@ import "encoding/json"
 
 type (
 	CreationRequest struct {
-		URLToImage string `json:"urlToImage"`
-		Text       string `json:"text"`
+		URLToPost string `json:"urlToPost"`
+		Text      string `json:"text"`
 	}
 	Response struct {
 		ID string `json:"id"`
 	}
 	PostToSave struct {
-		ID         string `json:"id" dynamodbav:"id"`
-		URLToImage string `json:"urlToImage" dynamodbav:"url_to_image"`
-		Text       string `json:"text" dynamodbav:"text"`
+		ID        string `json:"id" dynamodbav:"id"`
+		URLToPost string `json:"urlToPost" dynamodbav:"url_to_post"`
+		Text      string `json:"text" dynamodbav:"text"`
 	}
 )
 

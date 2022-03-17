@@ -3,11 +3,11 @@ package adapters
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"strings"
 
 	"github.com/FredySosa/AWS-Go-Test/processData/internal/core/domain"
+	"github.com/FredySosa/AWS-Go-Test/processData/internal/ports"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
@@ -16,10 +16,13 @@ import (
 const insertType = "INSERT"
 
 type Handler struct {
+	SNSService ports.SNSServicePort
 }
 
-func NewSNSHandler() Handler {
-	return Handler{}
+func NewSNSHandler(ss ports.SNSServicePort) Handler {
+	return Handler{
+		SNSService: ss,
+	}
 }
 
 func (h Handler) ProcessRequest(ctx context.Context, e events.DynamoDBEvent) error {
@@ -37,7 +40,10 @@ func (h Handler) ProcessRequest(ctx context.Context, e events.DynamoDBEvent) err
 		posts = append(posts, post)
 	}
 
-	fmt.Println("los posts", posts)
+	if err := h.SNSService.PublishMessage(ctx, posts); err != nil {
+		return err
+	}
+
 	return nil
 }
 

@@ -20,14 +20,14 @@ func NewPostsService(pr ports.PostsRepositoryPort) PostsService {
 }
 
 func (ps PostsService) CreatePort(ctx context.Context, request domain.CreationRequest) (domain.Response, error) {
-	if request.URLToImage == "" || request.Text == "" {
+	if request.URLToPost == "" || request.Text == "" {
 		return domain.Response{}, domain.ValidationError
 	}
 
 	toCreate := domain.PostToSave{
-		ID:         uuid.New().String(),
-		URLToImage: request.URLToImage,
-		Text:       request.Text,
+		ID:        uuid.New().String(),
+		URLToPost: request.URLToPost,
+		Text:      request.Text,
 	}
 
 	if err := ps.PostsRepository.CreatePost(ctx, toCreate); err != nil {
