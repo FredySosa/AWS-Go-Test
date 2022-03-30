@@ -8,10 +8,7 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 )
 
-type lambdaFunc func(
-	ctx context.Context,
-	request events.APIGatewayV2HTTPRequest,
-) (events.APIGatewayV2HTTPResponse, error)
+type lambdaFunc func(ctx context.Context) (events.APIGatewayV2HTTPResponse, error)
 
 type LambdaHandler struct {
 	httpHandlerFunc lambdaFunc
@@ -27,9 +24,7 @@ func Initialize(ctx context.Context, region string) LambdaHandler {
 	}
 }
 
-func (lambda *LambdaHandler) LambdaHandler(
-	ctx context.Context, req events.APIGatewayV2HTTPRequest,
-) (events.APIGatewayV2HTTPResponse, error) {
+func (lambda *LambdaHandler) LambdaHandler(ctx context.Context) (events.APIGatewayV2HTTPResponse, error) {
 
-	return lambda.httpHandlerFunc(ctx, req)
+	return lambda.httpHandlerFunc(ctx)
 }

@@ -3,10 +3,11 @@ package adapters
 import (
 	"context"
 	"errors"
+	"net/http"
+
 	"github.com/FredySosa/AWS-Go-Test/getData/internal/core/domain"
 	"github.com/FredySosa/AWS-Go-Test/getData/internal/ports"
 	"github.com/aws/aws-lambda-go/events"
-	"net/http"
 )
 
 type Handler struct {
@@ -19,11 +20,7 @@ func NewHTTPHandler(sp ports.PostsServicePort) Handler {
 	}
 }
 
-func (h Handler) ProcessRequest(
-	ctx context.Context,
-	req events.APIGatewayV2HTTPRequest,
-) (events.APIGatewayV2HTTPResponse, error) {
-
+func (h Handler) ProcessRequest(ctx context.Context) (events.APIGatewayV2HTTPResponse, error) {
 	response, err := h.PostsServicePort.GetPosts(ctx)
 	if err != nil {
 		toReturn := events.APIGatewayV2HTTPResponse{
@@ -43,7 +40,7 @@ func (h Handler) ProcessRequest(
 	}
 
 	return events.APIGatewayV2HTTPResponse{
-		StatusCode: http.StatusCreated,
+		StatusCode: http.StatusOK,
 		Headers: map[string]string{
 			"Content-Type": "application/json",
 		},
