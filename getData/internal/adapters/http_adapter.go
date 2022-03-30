@@ -2,14 +2,11 @@ package adapters
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
-	"net/http"
-	"strings"
-
-	"github.com/FredySosa/AWS-Go-Test/createData/internal/core/domain"
-	"github.com/FredySosa/AWS-Go-Test/createData/internal/ports"
+	"github.com/FredySosa/AWS-Go-Test/getData/internal/core/domain"
+	"github.com/FredySosa/AWS-Go-Test/getData/internal/ports"
 	"github.com/aws/aws-lambda-go/events"
+	"net/http"
 )
 
 type Handler struct {
@@ -27,18 +24,7 @@ func (h Handler) ProcessRequest(
 	req events.APIGatewayV2HTTPRequest,
 ) (events.APIGatewayV2HTTPResponse, error) {
 
-	var request domain.CreationRequest
-	if err := json.NewDecoder(strings.NewReader(req.Body)).Decode(&request); err != nil {
-		return events.APIGatewayV2HTTPResponse{
-			StatusCode: domain.ParsingBodyError.HTTPCode,
-			Headers: map[string]string{
-				"Content-Type": "application/json",
-			},
-			Body: domain.ParsingBodyError.String(),
-		}, nil
-	}
-
-	response, err := h.PostsServicePort.CreatePost(ctx, request)
+	response, err := h.PostsServicePort.GetPosts(ctx)
 	if err != nil {
 		toReturn := events.APIGatewayV2HTTPResponse{
 			StatusCode: domain.UnknownErr.HTTPCode,

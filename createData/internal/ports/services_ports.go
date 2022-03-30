@@ -7,5 +7,5 @@ import (
 )
 
 type PostsServicePort interface {
-	CreatePort(ctx context.Context, request domain.CreationRequest) (domain.Response, error)
+	CreatePost(ctx context.Context, request domain.CreationRequest) (domain.Response, error)
 }

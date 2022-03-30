@@ -11,6 +11,8 @@ import (
 	"github.com/FredySosa/AWS-Go-Test/processData/internal/ports"
 )
 
+const template = "%s.\nPara más informacion da clic en el siguiente link: %s"
+
 type SNSService struct {
 	SNS   ports.SNSPort
 	topic string
@@ -37,5 +39,3 @@ func (ss SNSService) PublishMessage(ctx context.Context, posts []domain.Post) er
 
 	return nil
 }
-
-const template = "%s.\nPara más información da clic en el siguiente link: %s"

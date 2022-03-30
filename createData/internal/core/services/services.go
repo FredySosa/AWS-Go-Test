@@ -19,7 +19,7 @@ func NewPostsService(pr ports.PostsRepositoryPort) PostsService {
 	}
 }
 
-func (ps PostsService) CreatePort(ctx context.Context, request domain.CreationRequest) (domain.Response, error) {
+func (ps PostsService) CreatePost(ctx context.Context, request domain.CreationRequest) (domain.Response, error) {
 	if request.URLToPost == "" || request.Text == "" {
 		return domain.Response{}, domain.ValidationError
 	}

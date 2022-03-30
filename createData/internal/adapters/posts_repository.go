@@ -26,7 +26,7 @@ type PostsRepository struct {
 }
 
 func NewPostsRepository(ctx context.Context, region string) PostsRepository {
-	configuration, _ := config.LoadDefaultConfig(ctx, func(o *config.LoadOptions) error { //nolint: errcheck
+	configuration, _ := config.LoadDefaultConfig(ctx, func(o *config.LoadOptions) error {
 		o.Region = region
 
 		return nil
