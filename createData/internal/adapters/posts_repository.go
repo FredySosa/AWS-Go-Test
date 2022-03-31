@@ -13,6 +13,7 @@ import (
 
 const tableName = "posts"
 
+//go:generate mockgen -destination=./mocks/dynamodb_mock.go -package=mocks -source=posts_repository.go
 type DynamoDB interface {
 	PutItem(
 		ctx context.Context,
