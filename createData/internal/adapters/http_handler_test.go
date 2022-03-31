@@ -8,13 +8,12 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/FredySosa/AWS-Go-Test/createData/internal/core/domain"
 	"github.com/FredySosa/AWS-Go-Test/createData/internal/mocks"
 	"github.com/FredySosa/AWS-Go-Test/createData/internal/ports"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestHandler_ProcessRequest(t *testing.T) {
